@@ -156,7 +156,7 @@ LazyLoad = (function (doc) {
   @param {Object=} obj (optional) object to pass to the callback function
   @param {Object=} context (optional) if provided, the callback function will
     be executed in this object's context
-  @param {Boolean=} onfail (optional) if provided, this is called if resource fails to load
+  @param {Function=} onfail (optional) if provided, this is called if resource fails to load
   @private
   */
   function load(type, urls, callback, obj, context, onfail) {
@@ -366,7 +366,7 @@ LazyLoad = (function (doc) {
     @param {Object=} obj (optional) object to pass to the callback function
     @param {Object=} context (optional) if provided, the callback function
       will be executed in this object's context
-    @param {Boolean=} onfail (optional) if provided, this is called if resource fails to load
+    @param {Function=} onfail (optional) if provided, this is called if resource fails to load
     @static
     */
     css: function (urls, callback, obj, context, onfail) {
@@ -391,7 +391,7 @@ LazyLoad = (function (doc) {
     @param {Object=} obj (optional) object to pass to the callback function
     @param {Object=} context (optional) if provided, the callback function
       will be executed in this object's context
-    @param {Boolean=} onfail (optional) if provided, this is called if resource fails to load
+    @param {Function=} onfail (optional) if provided, this is called if resource fails to load
     @static
     */
     js: function (urls, callback, obj, context, onfail) {
