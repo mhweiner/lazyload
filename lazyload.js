@@ -150,15 +150,16 @@ LazyLoad = (function (doc) {
 
   @method load
   @param {String} type resource type ('css' or 'js')
-  @param {String|Array} urls (optional) URL or array of URLs to load
-  @param {Function} callback (optional) callback function to execute when the
+  @param {String|Array=} urls (optional) URL or array of URLs to load
+  @param {Function=} callback (optional) callback function to execute when the
     resource is loaded
-  @param {Object} obj (optional) object to pass to the callback function
-  @param {Object} context (optional) if provided, the callback function will
+  @param {Object=} obj (optional) object to pass to the callback function
+  @param {Object=} context (optional) if provided, the callback function will
     be executed in this object's context
+  @param {Boolean=} onfail (optional) if provided, this is called if resource fails to load
   @private
   */
-  function load(type, urls, callback, obj, context) {
+  function load(type, urls, callback, obj, context, onfail) {
     var isCSS   = type === 'css',
         nodes   = [],
         i, len, node, p, pendingUrls, url;
@@ -168,6 +169,7 @@ LazyLoad = (function (doc) {
 	  }
 	  
 	  function _failure(){
+		  onfail.apply(context, obj);
 		  finish(type);
 	  }
 
@@ -257,7 +259,8 @@ LazyLoad = (function (doc) {
           pollGecko(node);
         }
       } else {
-        node.onload = node.onerror = _success;
+        node.onload = _success;
+        node.onerror = _failure;
       }
 
       nodes.push(node);
@@ -396,4 +399,4 @@ LazyLoad = (function (doc) {
     }
 
   };
-})(this.document);
+})(document);
