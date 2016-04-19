@@ -159,10 +159,17 @@ LazyLoad = (function (doc) {
   @private
   */
   function load(type, urls, callback, obj, context) {
-    var _finish = function () { finish(type); },
-        isCSS   = type === 'css',
+    var isCSS   = type === 'css',
         nodes   = [],
         i, len, node, p, pendingUrls, url;
+	  
+	  function _success(){
+		  finish(type);
+	  }
+	  
+	  function _failure(){
+		  finish(type);
+	  }
 
     env || getEnv();
 
@@ -232,7 +239,7 @@ LazyLoad = (function (doc) {
         node.onreadystatechange = function () {
           if (/loaded|complete/.test(node.readyState)) {
             node.onreadystatechange = null;
-            _finish();
+            _success();
           }
         };
       } else if (isCSS && (env.gecko || env.webkit)) {
@@ -250,7 +257,7 @@ LazyLoad = (function (doc) {
           pollGecko(node);
         }
       } else {
-        node.onload = node.onerror = _finish;
+        node.onload = node.onerror = _success;
       }
 
       nodes.push(node);
@@ -351,15 +358,16 @@ LazyLoad = (function (doc) {
 
     @method css
     @param {String|Array} urls CSS URL or array of CSS URLs to load
-    @param {Function} callback (optional) callback function to execute when
+    @param {Function=} callback (optional) callback function to execute when
       the specified stylesheets are loaded
-    @param {Object} obj (optional) object to pass to the callback function
-    @param {Object} context (optional) if provided, the callback function
+    @param {Object=} obj (optional) object to pass to the callback function
+    @param {Object=} context (optional) if provided, the callback function
       will be executed in this object's context
+    @param {Boolean=} onfail (optional) if provided, this is called if resource fails to load
     @static
     */
-    css: function (urls, callback, obj, context) {
-      load('css', urls, callback, obj, context);
+    css: function (urls, callback, obj, context, onfail) {
+      load('css', urls, callback, obj, context, onfail);
     },
 
     /**
@@ -375,15 +383,16 @@ LazyLoad = (function (doc) {
 
     @method js
     @param {String|Array} urls JS URL or array of JS URLs to load
-    @param {Function} callback (optional) callback function to execute when
+    @param {Function=} callback (optional) callback function to execute when
       the specified scripts are loaded
-    @param {Object} obj (optional) object to pass to the callback function
-    @param {Object} context (optional) if provided, the callback function
+    @param {Object=} obj (optional) object to pass to the callback function
+    @param {Object=} context (optional) if provided, the callback function
       will be executed in this object's context
+    @param {Boolean=} onfail (optional) if provided, this is called if resource fails to load
     @static
     */
-    js: function (urls, callback, obj, context) {
-      load('js', urls, callback, obj, context);
+    js: function (urls, callback, obj, context, onfail) {
+      load('js', urls, callback, obj, context, onfail);
     }
 
   };
